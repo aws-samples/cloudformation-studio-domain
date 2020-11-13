@@ -10,7 +10,7 @@ First, make sure you don't have existing Studio domain. Because at the time of w
 
 The easiest way is to use shell script: `deploy.sh`
 
-If you want to create the stack from AWS Management Console, make sure 1) your S3 bucket is versioned, 2) you enter the correct version for `function.zip`, 3) enter the correct subnet ID and VPCId. 
+If you want to create the stack from AWS Management Console, **make sure** 1) your S3 bucket is versioned, 2) you enter the correct version for `function.zip`, 3) enter the correct subnet ID and VPCId. 
 
 ## Security
 
