@@ -3,7 +3,7 @@ rm -rf function.zip
 zip -r function.zip lambda_function.py
 
 rm -rf cfnResponse-layer.zip
-zip -r cfnResponse-layer.zip cfnresponse.py.py
+zip -r cfnResponse-layer.zip cfnresponse.py
 
 if [ $# -lt 2 ]; then
   echo "Usage: ./deploy.sh <VpcId>  <SubnetIds seperated by comma>"
