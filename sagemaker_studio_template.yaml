@@ -6,7 +6,7 @@ Parameters:
     Description: "S3 Bucket"
   UserProfileName:
     Type: String
-    Description: "S3 Object Version"
+    Description: "user profile name "
     Default: "DefaultUser"
   VPCId:
     Type: String
@@ -122,7 +122,7 @@ Resources:
     Type: Custom::UserProfile
     Properties:
       ServiceToken: !GetAtt UserProfileFunction.Arn
-      DomainId: !GetAtt StudioDomain
+      DomainId: !GetAtt StudioDomain.DomainId
       UserProfileName: !Ref UserProfileName
       UserSettings:
         ExecutionRole: !GetAtt SageMakerExecutionRole.Arn
