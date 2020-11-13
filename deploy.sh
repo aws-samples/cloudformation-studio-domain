@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
-rm -rf function.zip
-zip -r function.zip lambda_function.py
-
-rm -rf cfnResponse-layer.zip
-zip -r cfnResponse-layer.zip cfnresponse.py
 
 if [ $# -lt 2 ]; then
   echo "Usage: ./deploy.sh <VpcId>  <SubnetIds seperated by comma>"
+  exit 1
 fi
+
+rm -rf domain_function.zip
+zip -rq domain_function.zip domain_function.py cfnresponse.py
+
+rm -rf UserProfile-function.zip
+zip -rq UserProfile-function.zip UserProfile-function.py cfnresponse.py
+
+#rm -rf cfnResponse-layer.zip
+#zip -rq cfnResponse-layer.zip cfnresponse.py
+
 
 export AWS_REGION=${AWS_DEFAULT_REGION}
 export AWS_ACCOUNT=$(aws sts get-caller-identity --output text --query Account)
@@ -39,7 +45,10 @@ else
         echo "S3 bucket $DEPLOYMENT_BUCKET for Lambda Deployment already exists."
 fi
 
-aws s3 cp function.zip s3://${DEPLOYMENT_BUCKET}/
+aws s3 cp domain_function.zip s3://${DEPLOYMENT_BUCKET}/
+aws s3 cp UserProfile-function.zip s3://${DEPLOYMENT_BUCKET}/
+aws s3 cp cfnResponse-layer.zip s3://${DEPLOYMENT_BUCKET}/
+
 rm -rf function.zip
 LATEST_LAMBDA_KEY=$(aws s3api list-object-versions --bucket $DEPLOYMENT_BUCKET --prefix function.zip --query 'Versions[0].VersionId')
 
