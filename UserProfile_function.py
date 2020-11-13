@@ -33,8 +33,8 @@ def handle_create(event, context):
     print("**Creating studio domain")
     response_data = create_user_profile(resource_config)
     cfnresponse.send(event, context, cfnresponse.SUCCESS,
-                     {'UserProfileName': response_data['UserProfileName']},
-                     physicalResourceId=response_data['UserProfileName'])
+                     {'UserProfileName': response_data['UserProfileName']}, physicalResourceId=response_data['UserProfileName'])
+
 
 def handle_delete(event, context):
     print('Received delete event')
