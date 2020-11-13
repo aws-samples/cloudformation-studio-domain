@@ -1,0 +1,121 @@
+import json
+import time
+import boto3
+import logging
+import cfnresponse
+from botocore.exceptions import ClientError
+
+client = boto3.client('sagemaker')
+
+
+def lambda_handler(event, context):
+    print(json.dumps(event))
+    try:
+        if event['RequestType'] == 'Create':
+            handle_create(event, context)
+        elif event['RequestType'] == 'Update':
+            handle_update(event, context)
+        elif event['RequestType'] == 'Delete':
+            handle_delete(event, context)
+    except ClientError as exception:
+        logging.error(exception)
+        cfnresponse.send(event, context, cfnresponse.FAILED,
+                         {}, error=str(exception))
+
+
+def handle_create(event, context):
+    print("**Starting running the SageMaker workshop setup code")
+    my_session = boto3.session.Session()
+    my_region = my_session.region_name
+    print("**Current region identified: " + my_region)
+    resource_config = event['ResourceProperties']
+
+    print("**Creating studio domain")
+    response_data = create_studio_domain(resource_config)
+    cfnresponse.send(event, context, cfnresponse.SUCCESS,
+                     {}, physicalResourceId=response_data['DomainArn'])
+
+
+def handle_delete(event, context):
+    print('Received delete event')
+    domain_id = event['PhysicalResourceId'].split('/')[-1]
+    try:
+        client.describe_domain(DomainId=domain_id)
+    except ClientError as exception:
+        cfnresponse.send(event, context, cfnresponse.SUCCESS,
+                         {}, physicalResourceId=event['PhysicalResourceId'])
+        return
+    delete_domain(domain_id)
+    cfnresponse.send(event, context, cfnresponse.SUCCESS, {},
+                     physicalResourceId=event['PhysicalResourceId'])
+
+
+def handle_update(event, context):
+    logging.info('Received Update event')
+    domain_id = event['PhysicalResourceId'].split('/')[-1]
+    default_user_settings = event['ResourceProperties']['DefaultUserSettings']
+    update_domain(domain_id, default_user_settings)
+    cfnresponse.send(event, context, cfnresponse.SUCCESS, {},
+                     physicalResourceId=event['PhysicalResourceId'])
+
+
+def create_studio_domain(config):
+    vpc_id = config['VPC']
+    subnet_ids = config['SubnetIds']
+    default_user_settings = config['DefaultUserSettings']
+    domain_name = config['DomainName']
+
+    response = client.create_domain(
+        DomainName=domain_name,
+        AuthMode='IAM',
+        DefaultUserSettings=default_user_settings,
+        SubnetIds=subnet_ids.split(','),
+        VpcId=vpc_id
+    )
+
+    domain_id = response['DomainArn'].split('/')[-1]
+    created = False
+    while not created:
+        response = client.describe_domain(DomainId=domain_id)
+        time.sleep(5)
+        if response['Status'] == 'InService':
+            created = True
+
+    logging.info("**SageMaker domain created successfully: %s", domain_id)
+    return response
+
+
+def delete_domain(domain_id):
+    response = client.delete_domain(
+        DomainId=domain_id,
+        RetentionPolicy={
+            'HomeEfsFileSystem': 'Delete'
+        }
+    )
+    deleted = False
+    while not deleted:
+        try:
+            client.describe_domain(DomainId=domain_id)
+        except ClientError as error:
+            if error.response['Error']['Code'] == 'ResourceNotFound':
+                print('Deleted')
+                deleted = True
+                return
+        time.sleep(5)
+    return response
+
+
+def update_domain(domain_id, default_user_settings):
+    response = client.update_domain(
+        DomainId=domain_id,
+        DefaultUserSettings=default_user_settings
+    )
+    updated = False
+    while not updated:
+        response = client.describe_domain(DomainId=domain_id)
+        if response['Status'] == 'InService':
+            updated = True
+        else:
+            logging.info('Updating .. %s', response['Status'])
+        time.sleep(5)
+    return response
