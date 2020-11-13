@@ -78,7 +78,7 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Code:
         S3Bucket: !Ref S3Bucket
-        S3Key: function.zip
+        S3Key: domain_function.zip
       Runtime: python3.8
       Timeout: 900
       Layers:
