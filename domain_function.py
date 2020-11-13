@@ -54,7 +54,7 @@ def handle_update(event, context):
     logging.info('Received Update event')
     domain_id = event['PhysicalResourceId']
     default_user_settings = event['ResourceProperties']['DefaultUserSettings']
-    response_data = update_domain(domain_id, default_user_settings)
+    update_domain(domain_id, default_user_settings)
     cfnresponse.send(event, context, cfnresponse.SUCCESS, {'DomainId' : domain_id},
                      physicalResourceId=event['PhysicalResourceId'])
 
