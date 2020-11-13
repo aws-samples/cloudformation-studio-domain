@@ -32,16 +32,14 @@ def handle_create(event, context):
 
     print("**Creating studio domain")
     response_data = create_user_profile(resource_config)
-    # cfnresponse.send(event, context, cfnresponse.SUCCESS,
-    #                  {}, physicalResourceId=response_data['DomainId'])
     cfnresponse.send(event, context, cfnresponse.SUCCESS,
                      {'UserProfileName': response_data['UserProfileName']},
                      physicalResourceId=response_data['UserProfileName'])
 
 def handle_delete(event, context):
     print('Received delete event')
-    domain_id = event['PhysicalResourceId'].split('/')[-2]
-    user_profile_name = event['PhysicalResourceId'].split('/')[-1]
+    user_profile_name = event['PhysicalResourceId']
+    domain_id = event['ResourceProperties']['DomainId']
     try:
         client.describe_user_profile(DomainId=domain_id, UserProfileName=user_profile_name)
     except ClientError as exception:
@@ -55,15 +53,12 @@ def handle_delete(event, context):
 
 def handle_update(event, context):
     logging.info('Received Update event')
-    domain_id = event['PhysicalResourceId'].split('/')[-2]
-    user_profile_name = event['PhysicalResourceId'].split('/')[-1]
+    user_profile_name = event['PhysicalResourceId']
+    domain_id = event['ResourceProperties']['DomainId']
     user_settings = event['ResourceProperties']['UserSettings']
     update_user_profile(domain_id, user_profile_name, user_settings)
-    # cfnresponse.send(event, context, cfnresponse.SUCCESS, {},
-    #                  physicalResourceId=event['PhysicalResourceId'])
-    cfnresponse.send(event, context, cfnresponse.SUCCESS,
-                         {'UserProfileName': response_data['UserProfileName']},
-                         physicalResourceId=response_data['UserProfileName'])
+    cfnresponse.send(event, context, cfnresponse.SUCCESS, {},
+                     physicalResourceId=event['PhysicalResourceId'])
 
 
 def create_user_profile(config):
@@ -77,7 +72,6 @@ def create_user_profile(config):
         UserSettings=user_settings,
     )
 
-    #domain_id = response['UserProfileArn'].split('/')[-1]
     created = False
     while not created:
         response = client.describe_user_profile(DomainId=domain_id, UserProfileName=user_profile_name)
