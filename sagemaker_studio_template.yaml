@@ -4,6 +4,7 @@ Parameters:
   S3Bucket:
     Type: String
     Description: "S3 Bucket"
+    Default: "test-studio-cf"
   UserProfileName:
     Type: String
     Description: "user profile name "
@@ -11,9 +12,11 @@ Parameters:
   VPCId:
     Type: String
     Description: VPC Id
+    Default: "vpc-4371b13e"
   SubnetIds:
     Type: String
     Description: Subnet Ids
+    Default: "subnet-0fc73c3e"
 
 Resources:
   LambdaExecutionRole:
@@ -48,6 +51,10 @@ Resources:
                   - sagemaker:DescribeDomain
                   - sagemaker:DeleteDomain
                   - sagemaker:UpdateDomain
+                  - sagemaker:CreateUserProfile
+                  - sagemaker:UpdateUserProfile
+                  - sagemaker:DeleteUserProfile
+                  - sagemaker:DescribeUserProfile
                 Resource: !Sub "arn:${AWS::Partition}:sagemaker:*:*:domain/*"
               - Sid: SageMakerExecPassRole
                 Effect: Allow
@@ -74,7 +81,7 @@ Resources:
   StudioDomainFunction:
     Type: AWS::Lambda::Function
     Properties:
-      Handler: lambda_function.lambda_handler
+      Handler: domain_function.lambda_handler
       Role: !GetAtt LambdaExecutionRole.Arn
       Code:
         S3Bucket: !Ref S3Bucket
@@ -91,18 +98,18 @@ Resources:
         - python3.8
       Content:
         S3Bucket: !Ref S3Bucket
-        S3Key: cfnResponse-layer.zip
-      Description: cfn-response layer
+        S3Key: cfnResponse_layer.zip
+      Description: cfn_response layer
       LayerName: cfn-response
 
   UserProfileFunction:
     Type: AWS::Lambda::Function
     Properties:
-      Handler: lambda_function.lambda_handler
+      Handler: UserProfile_function.lambda_handler
       Role: !GetAtt LambdaExecutionRole.Arn
       Code:
         S3Bucket: !Ref S3Bucket
-        S3Key: UserProfile-function.zip
+        S3Key: UserProfile_function.zip
       Runtime: python3.8
       Timeout: 900
       Layers:

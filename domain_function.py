@@ -33,7 +33,7 @@ def handle_create(event, context):
     print("**Creating studio domain")
     response_data = create_studio_domain(resource_config)
     cfnresponse.send(event, context, cfnresponse.SUCCESS,
-                     {}, physicalResourceId=response_data['DomainId'])
+                     {'DomainId': response_data['DomainId']}, physicalResourceId=response_data['DomainId'])
 
 
 def handle_delete(event, context):
@@ -54,7 +54,7 @@ def handle_update(event, context):
     logging.info('Received Update event')
     domain_id = event['PhysicalResourceId'].split('/')[-1]
     default_user_settings = event['ResourceProperties']['DefaultUserSettings']
-    update_domain(domain_id, default_user_settings)
+    response_data = update_domain(domain_id, default_user_settings)
     cfnresponse.send(event, context, cfnresponse.SUCCESS, {},
                      physicalResourceId=event['PhysicalResourceId'])
 

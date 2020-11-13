@@ -32,16 +32,18 @@ def handle_create(event, context):
 
     print("**Creating studio domain")
     response_data = create_user_profile(resource_config)
+    # cfnresponse.send(event, context, cfnresponse.SUCCESS,
+    #                  {}, physicalResourceId=response_data['DomainId'])
     cfnresponse.send(event, context, cfnresponse.SUCCESS,
-                     {}, physicalResourceId=response_data['DomainId'])
-
+                     {'UserProfileName': response_data['UserProfileName']},
+                     physicalResourceId=response_data['UserProfileName'])
 
 def handle_delete(event, context):
     print('Received delete event')
     domain_id = event['PhysicalResourceId'].split('/')[-2]
     user_profile_name = event['PhysicalResourceId'].split('/')[-1]
     try:
-        client.describe_domain(DomainId=domain_id, UserProfileName=user_profile_name)
+        client.describe_user_profile(DomainId=domain_id, UserProfileName=user_profile_name)
     except ClientError as exception:
         cfnresponse.send(event, context, cfnresponse.SUCCESS,
                          {}, physicalResourceId=event['PhysicalResourceId'])
@@ -57,8 +59,11 @@ def handle_update(event, context):
     user_profile_name = event['PhysicalResourceId'].split('/')[-1]
     user_settings = event['ResourceProperties']['UserSettings']
     update_user_profile(domain_id, user_profile_name, user_settings)
-    cfnresponse.send(event, context, cfnresponse.SUCCESS, {},
-                     physicalResourceId=event['PhysicalResourceId'])
+    # cfnresponse.send(event, context, cfnresponse.SUCCESS, {},
+    #                  physicalResourceId=event['PhysicalResourceId'])
+    cfnresponse.send(event, context, cfnresponse.SUCCESS,
+                         {'UserProfileName': response_data['UserProfileName']},
+                         physicalResourceId=response_data['UserProfileName'])
 
 
 def create_user_profile(config):
