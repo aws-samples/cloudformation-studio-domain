@@ -55,7 +55,9 @@ Resources:
                   - sagemaker:UpdateUserProfile
                   - sagemaker:DeleteUserProfile
                   - sagemaker:DescribeUserProfile
-                Resource: !Sub "arn:${AWS::Partition}:sagemaker:*:*:domain/*"
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:sagemaker:*:*:domain/*"
+                  - !Sub "arn:${AWS::Partition}:sagemaker:*:*:user-profile/*"
               - Sid: SageMakerExecPassRole
                 Effect: Allow
                 Action:

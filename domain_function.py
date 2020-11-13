@@ -38,7 +38,7 @@ def handle_create(event, context):
 
 def handle_delete(event, context):
     print('Received delete event')
-    domain_id = event['PhysicalResourceId'].split('/')[-1]
+    domain_id = event['PhysicalResourceId']
     try:
         client.describe_domain(DomainId=domain_id)
     except ClientError as exception:
@@ -52,10 +52,10 @@ def handle_delete(event, context):
 
 def handle_update(event, context):
     logging.info('Received Update event')
-    domain_id = event['PhysicalResourceId'].split('/')[-1]
+    domain_id = event['PhysicalResourceId']
     default_user_settings = event['ResourceProperties']['DefaultUserSettings']
     response_data = update_domain(domain_id, default_user_settings)
-    cfnresponse.send(event, context, cfnresponse.SUCCESS, {},
+    cfnresponse.send(event, context, cfnresponse.SUCCESS, {'DomainId' : domain_id},
                      physicalResourceId=event['PhysicalResourceId'])
 
 
