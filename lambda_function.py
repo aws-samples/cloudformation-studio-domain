@@ -33,7 +33,7 @@ def handle_create(event, context):
     print("**Creating studio domain")
     response_data = create_studio_domain(resource_config)
     cfnresponse.send(event, context, cfnresponse.SUCCESS,
-                     {}, physicalResourceId=response_data['DomainArn'])
+                     {}, physicalResourceId=response_data['DomainId'])
 
 
 def handle_delete(event, context):
