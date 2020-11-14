@@ -12,11 +12,11 @@ Parameters:
   VPCId:
     Type: String
     Description: VPC Id
-    Default: "vpc-4371b13e"
+    Default: "vpc-xxxxxx"
   SubnetIds:
     Type: String
     Description: Subnet Ids
-    Default: "subnet-0fc73c3e"
+    Default: "subnet-xxxxx"
 
 Resources:
   LambdaExecutionRole:
