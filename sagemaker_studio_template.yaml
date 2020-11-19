@@ -32,37 +32,43 @@ Resources:
             Action:
               - "sts:AssumeRole"
       Path: /
-      Policies:
-        - PolicyName: root
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Sid: CloudWatchLogsPermissions
-                Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: !Sub "arn:${AWS::Partition}:logs:*:*:*"
-              - Sid: SageMakerDomainPermission
-                Effect: Allow
-                Action:
-                  - sagemaker:CreateDomain
-                  - sagemaker:DescribeDomain
-                  - sagemaker:DeleteDomain
-                  - sagemaker:UpdateDomain
-                  - sagemaker:CreateUserProfile
-                  - sagemaker:UpdateUserProfile
-                  - sagemaker:DeleteUserProfile
-                  - sagemaker:DescribeUserProfile
-                Resource:
-                  - !Sub "arn:${AWS::Partition}:sagemaker:*:*:domain/*"
-                  - !Sub "arn:${AWS::Partition}:sagemaker:*:*:user-profile/*"
-              - Sid: SageMakerExecPassRole
-                Effect: Allow
-                Action:
-                  - iam:PassRole
-                Resource: !GetAtt  SageMakerExecutionRole.Arn
+
+
+  LambdaExecutionPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Path: /
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: CloudWatchLogsPermissions
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: !Sub "arn:${AWS::Partition}:logs:*:*:*"
+          - Sid: SageMakerDomainPermission
+            Effect: Allow
+            Action:
+              - sagemaker:CreateDomain
+              - sagemaker:DescribeDomain
+              - sagemaker:DeleteDomain
+              - sagemaker:UpdateDomain
+              - sagemaker:CreateUserProfile
+              - sagemaker:UpdateUserProfile
+              - sagemaker:DeleteUserProfile
+              - sagemaker:DescribeUserProfile
+            Resource:
+              - !Sub "arn:${AWS::Partition}:sagemaker:*:*:domain/*"
+              - !Sub "arn:${AWS::Partition}:sagemaker:*:*:user-profile/*"
+          - Sid: SageMakerExecPassRole
+            Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource: !GetAtt  SageMakerExecutionRole.Arn
+      Roles:
+        - !GetAtt  LambdaExecutionRole.Arn
 
   SageMakerExecutionRole:
     Type: "AWS::IAM::Role"
