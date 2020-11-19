@@ -68,7 +68,7 @@ Resources:
               - iam:PassRole
             Resource: !GetAtt  SageMakerExecutionRole.Arn
       Roles:
-        - !GetAtt  LambdaExecutionRole.Arn
+        - !Ref  LambdaExecutionRole
 
   SageMakerExecutionRole:
     Type: "AWS::IAM::Role"
