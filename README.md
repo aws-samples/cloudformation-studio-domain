@@ -6,12 +6,20 @@ In this blog post, we want to demonstrate how you can create a SageMaker Studio 
 
 ## How to run
 
-First, make sure you don't have any existing Studio Domains. Because at the time of writing, an AWS account is limited to one domain per region. Creating extra domain will cause error.
+Please make sure you don't have any existing Studio Domains. Because at the time of writing, an AWS account is limited to one domain per region. Creating extra domain will cause error.
 
 ### Step 1
+Zip `UserProfile_function.py`, `domain_function.py`, and `cfnresponse.py` and upload the zip files to your S3 bucket. The name of the zip files must be `UserProfile_function.zip`, `domain_function.zip`, and `cfnresponse.zip`.
 
+### Step 2
+In your AWS Management Console, select CloudFormation, then click `Create stack` and `With new resources (standard)`. You can choose `Upload a template file` under `Specify template`, then click `Choose file` to upload `sagemaker_studio_template.yaml`. Once the template is uploaded, click `Next`.
 
-If you want to create the stack from AWS Management Console, **make sure** 1) your S3 bucket is versioned, 2) you enter the correct version for `function.zip`, 3) enter the correct subnet ID and VPCId.
+Make sure in `Specify stack details` page, you enter the right `S3Bucket`, `SubnetIds`, `UserProfileName`, and `VPCId`. The S3 bucket should contain the 3 zip files from Step 1.
+
+### Step 3
+Leave the rest options as default and click `Create stack`.
+
+The whole process should take a few minutes.
 
 ## Security
 
