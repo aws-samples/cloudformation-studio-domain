@@ -25,9 +25,6 @@ def lambda_handler(event, context):
 
 def handle_create(event, context):
     print("**Starting running the SageMaker workshop setup code")
-    my_session = boto3.session.Session()
-    my_region = my_session.region_name
-    print("**Current region identified: " + my_region)
     resource_config = event['ResourceProperties']
 
     print("**Creating studio domain")
