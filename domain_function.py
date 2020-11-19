@@ -9,7 +9,6 @@ client = boto3.client('sagemaker')
 
 
 def lambda_handler(event, context):
-    print(json.dumps(event))
     try:
         if event['RequestType'] == 'Create':
             handle_create(event, context)
