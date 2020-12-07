@@ -27,7 +27,7 @@ The whole process should take a few minutes.
 
 ## Note for new account ONLY
 
-Please note that if you are running this template in a brand new account (ONLY for new accounts), you might want to add “CreateServiceLinkedRole” IAM permission to create  `AWSServiceRoleForAmazonSageMakerNotebooks` service linked role in LambdaExecutionPolicy IAM policy.
+Please note that if you are running this template in a brand new account (ONLY for new accounts), you might want to add `CreateServiceLinkedRole` IAM permission to create  `AWSServiceRoleForAmazonSageMakerNotebooks` service linked role in `LambdaExecutionPolicy` IAM policy.
 
 
 
