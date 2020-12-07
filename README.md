@@ -26,6 +26,10 @@ The whole process should take a few minutes.
 `aws cloudformation deploy --stack-name <stack-name> --template-file sagemaker_studio_template.yaml --capabilities CAPABILITY_IAM --parameter-overrides S3Bucket=<bucketName> VPCId=<VpcId> SubnetIds=<Comma-Seperated SubnetIds>`
 
 
+Please note that if you are running this template in a brand new account (ONLY for new accounts), you might want to add “CreateServiceLinkedRole” IAM permission to create  `AWSServiceRoleForAmazonSageMakerNotebooks` service linked role in LambdaExecutionPolicy IAM policy. 
+
+
+
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
