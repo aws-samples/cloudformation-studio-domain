@@ -4,7 +4,7 @@ Amazon SageMaker Studio (https://docs.aws.amazon.com/sagemaker/latest/dg/gs-stud
 
 In this blog post, we want to demonstrate how you can create a SageMaker Studio domain using CloudFormation.
 
-## How to run
+## How to run from Management Console
 
 Please make sure you don't have any existing Studio Domains. Because at the time of writing, an AWS account is limited to one domain per region. Creating extra domain will cause error.
 
@@ -20,6 +20,11 @@ Make sure in `Specify stack details` page, you enter the right `S3Bucket`, `Subn
 Leave the rest options as default and click `Create stack`.
 
 The whole process should take a few minutes.
+
+## How to run from command line
+
+`aws cloudformation deploy --stack-name <stack-name> --template-file sagemaker_studio_template.yaml --capabilities CAPABILITY_IAM --parameter-overrides S3Bucket=<bucketName> VPCId=<VpcId> SubnetIds=<Comma-Seperated SubnetIds>``
+
 
 ## Security
 
