@@ -23,7 +23,7 @@ The whole process should take a few minutes.
 
 ## How to run from command line
 
-`aws cloudformation deploy --stack-name <stack-name> --template-file sagemaker_studio_template.yaml --capabilities CAPABILITY_IAM --parameter-overrides S3Bucket=<bucketName> VPCId=<VpcId> SubnetIds=<Comma-Seperated SubnetIds>``
+`aws cloudformation deploy --stack-name <stack-name> --template-file sagemaker_studio_template.yaml --capabilities CAPABILITY_IAM --parameter-overrides S3Bucket=<bucketName> VPCId=<VpcId> SubnetIds=<Comma-Seperated SubnetIds>`
 
 
 ## Security
