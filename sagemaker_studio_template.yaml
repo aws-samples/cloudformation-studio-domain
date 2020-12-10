@@ -98,6 +98,7 @@ Resources:
       Timeout: 900
       Layers:
         - !Ref CfnResponseLayer
+      DependsOn: LambdaExecutionPolicy
 
   CfnResponseLayer:
     Type: AWS::Lambda::LayerVersion

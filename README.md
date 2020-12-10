@@ -37,6 +37,7 @@ Please note that if you are running this template in a brand new account (ONLY f
      Resource:
        - !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/aws-service-role/sagemaker.amazonaws.com/AWSServiceRoleForAmazonSageMakerNotebooks"
 ```
+Many thanks to my colleague Dave Dickerson for his several great feedbacks!
 
 ## Security
 
