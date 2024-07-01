@@ -9,7 +9,7 @@ Parameters:
   DomainName:
     Type: String
     Description: The domain name of the Admin Sagemaker Studio instance
-    Default: "canvas-domain"
+    Default: "sagemaker-domain"
   S3BucketPrefix:
     Type: String
     Description: The prefix for the S3 bucket. Suffix will be -REGION-ACCOUNT_ID
@@ -717,9 +717,14 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
+                  - ec2:CreateNetworkInterface
+                  - ec2:CreateNetworkInterfacePermission
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DeleteNetworkInterfacePermission
+                  - ec2:DescribeDhcpOptions
                   - ec2:DescribeNetworkInterfaces
-                  - ec2:DescribeSubnets
                   - ec2:DescribeSecurityGroups
+                  - ec2:DescribeSubnets
                   - ec2:DescribeVpcs
                   - ec2:DescribeVpcEndpoints
                   - ec2:DescribeVpcEndpointServices
@@ -760,6 +765,7 @@ Resources:
                   - sagemaker:ListSpaces
                   - sagemaker:ListTags
                   - sagemaker:ListUserProfiles
+                  - sagemaker:Search
                 Resource: "*"
               - Effect: Allow
                 Action:
@@ -775,6 +781,32 @@ Resources:
                   - sagemaker:AddTags
                 Resource:
                   - !Sub "arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:*/*"
+              - Sid: MissingCanvasFullAccessPermissions
+                Effect: Allow
+                Action:
+                  - sagemaker:CreateTrainingJob
+                  - sagemaker:CreateTransformJob
+                  - sagemaker:DescribeTrainingJob
+                  - sagemaker:DescribeTransformJob
+                  - sagemaker:StopAutoMLJob
+                  - sagemaker:StopTrainingJob
+                  - sagemaker:StopTransformJob
+                Resource:
+                  - arn:aws:sagemaker:*:*:*Canvas*
+                  - arn:aws:sagemaker:*:*:*canvas*
+                  - arn:aws:sagemaker:*:*:*model-compilation-*
+        - PolicyName: AutoscalingOperations
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - application-autoscaling:DescribeScalingActivities
+                Resource: "arn:aws:application-autoscaling:*:*:scalable-target/*"
+                Condition:
+                  StringEquals:
+                    application-autoscaling:service-namespace: "sagemaker"
+                    application-autoscaling:scalable-dimension: "sagemaker:variant:DesiredInstanceCount"
 
   ### SageMaker Canvas Extra Settings
   LambdaExecutionRole:
